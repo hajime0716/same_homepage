@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>鮫の遊び場 - IQ診断</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      background-color: #eef6fa;
+      padding: 50px 20px;
+    }
+    h1 {
+      color: #333;
+      font-size: 2em;
+    }
+    form {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: inline-block;
+      max-width: 400px;
+      width: 100%;
+    }
+    label {
+      font-size: 18px;
+      display: block;
+      margin-bottom: 10px;
+      color: #444;
+    }
+    input[type="text"] {
+      width: 100%;
+      font-size: 18px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+    button {
+      font-size: 18px;
+      padding: 10px 25px;
+      background-color: #0080ff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #005fcc;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 30px;
+      font-size: 16px;
+      color: #0080ff;
+      text-decoration: none;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="back-link">← ホームに戻る</a>
+
+  <h1>IQ（知能指数）診断</h1>
+
+  <form onsubmit="checkIQ(event)">
+    <label for="nameInput">あなたの名前を入力してください：</label>
+    <input type="text" id="nameInput" placeholder="例：イカ次郎" />
+    <button type="submit">診断する</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    function checkIQ(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('nameInput').value.trim();
+      const resultElement = document.getElementById('result');
+
+      resultElement.classList.remove('error');
+      resultElement.innerText = '';
+
+      if (name === '') {
+        resultElement.classList.add('error');
+        resultElement.innerText = '⚠️ 名前を入力してください。';
+        return;
+      }
+
+      if (name.length > 150) {
+        resultElement.classList.add('error');
+        resultElement.innerText = '⚠️ 名前が長すぎます。150文字以内で入力してください。';
+        return;
+      }
+
+      if (name === 'アインシュタイン') {
+        resultElement.innerText =
+          `🧠 ${name}のIQは【∞】！\n🏆 天才中の天才\n📘 スキル：相対性理論、時間操作、宇宙の真理\n💬 コメント：宇宙の法則すらあなたの思考についてこれません。`;
+        return;
+      }
+
+      let seed = 0;
+      for (let i = 0; i < name.length; i++) {
+        seed += name.charCodeAt(i) * (i + 1);
+      }
+
+      const iq = (seed % 160) + 40; // 40〜199くらい
+
+      const titles = [
+        'おバカ天使', 'ひらめき小学生', 'ひよっこ科学者', '常識人', '知識の探求者',
+        '論破職人', 'IQ高めの魔術師', '知恵の守護者', '超脳戦士', '人類の希望',
+        '神に選ばれし頭脳', '存在しない領域の知性'
+      ];
+      const title = titles[seed % titles.length];
+
+      const comments = iq < 70
+        ? '発想がぶっ飛びすぎて天才かも…いや逆かも。'
+        : iq < 100
+        ? 'そこそこの思考力。平均的で安心感あり。'
+        : iq < 130
+        ? 'なかなかの頭脳派！やるじゃん！'
+        : iq < 160
+        ? '天才の域に達しています。会話が通じない可能性あり。'
+        : 'IQ測定不能。次元を超えた知性の持ち主です。';
+
+      const skills = [
+        '高速読解', '論理の迷宮突破', '記憶力∞', '数式の舞', '分析ビーム',
+        '10次元思考', '言語ハッキング', '時間を操る会話術', '虚数概念理解',
+        '空論の具現化', '100冊同時読破', '夢解析', '数字との会話', 'カオス理論制御'
+      ];
+
+      const selectedSkills = [];
+      for (let i = 0; i < 3; i++) {
+        const index = (seed + i * 5) % skills.length;
+        if (!selectedSkills.includes(skills[index])) {
+          selectedSkills.push(skills[index]);
+        }
+      }
+
+      resultElement.innerText =
+        `🧠 ${name}のIQは【${iq}】！\n🏅 称号：『${title}』\n📘 スキル：${selectedSkills.join('、')}\n💬 コメント：${comments}`;
+    }
+  </script>
+
+</body>
+</html>
