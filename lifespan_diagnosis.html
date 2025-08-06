@@ -2,97 +2,111 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>寿命診断</title>
+  <title>寿命と死因診断</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #eef6fa;
-      color: #333;
       text-align: center;
+      background-color: #e8eef5;
       padding: 50px 20px;
+      color: #333;
     }
-    header {
-      background-color: #d0ebff;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 30px;
-    }
+
     h1 {
-      font-size: 2.5em;
-      margin: 0;
+      color: #2c3e50;
     }
-    p.tagline {
-      margin-top: 10px;
-      font-size: 1.2em;
-      color: #555;
-    }
+
     input[type="text"] {
       padding: 10px;
+      font-size: 16px;
       width: 250px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      margin-top: 20px;
-      font-size: 1em;
+      margin-bottom: 10px;
     }
+
     button {
-      margin-top: 20px;
-      padding: 10px 25px;
-      font-size: 1em;
-      background-color: #0080ff;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #2980b9;
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 5px;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #005fcc;
-    }
-    .result {
+
+    #result {
       margin-top: 30px;
-      font-size: 1.2em;
-      font-weight: bold;
+      font-size: 18px;
       background-color: #ffffff;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
+      display: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
+
+    .long-life { color: green; font-weight: bold; }
+    .average-life { color: orange; font-weight: bold; }
+    .short-life { color: red; font-weight: bold; }
+    .comment { font-style: italic; margin-top: 10px; }
   </style>
 </head>
 <body>
-  <header>
-    <h1>寿命診断</h1>
-    <p class="tagline">あなたの寿命と死因を名前から予測します</p>
-  </header>
-
-  <input type="text" id="nameInput" placeholder="名前を入力してね" />
-  <br>
+  <h1>寿命と死因診断</h1>
+  <input type="text" id="nameInput" placeholder="名前を入力してください" />
   <button onclick="diagnose()">診断する</button>
-
-  <div class="result" id="result" style="display:none;"></div>
+  <div id="result"></div>
 
   <script>
-    const deathCauses = [
-      "老衰", "謎のウイルス", "火山の噴火", "交通事故", "ゾンビ襲撃", "空から何かが降ってきた", 
-      "タイムトラベルの失敗", "推しに出会って心臓が止まった", "寿命吸われた", "ピアノ落下"
-    ];
-
     function diagnose() {
       const name = document.getElementById("nameInput").value.trim();
-      if (name === "") return;
+      if (!name) {
+        alert("名前を入力してください！");
+        return;
+      }
 
-      // 疑似ランダムな値を生成
-      const hash = Array.from(name).reduce((sum, char) => sum + char.charCodeAt(0), 0);
+      let seed = 0;
+      for (let i = 0; i < name.length; i++) {
+        seed += name.charCodeAt(i) * (i + 1);
+      }
 
-      const lifespan = 40 + (hash % 60); // 寿命：40〜99歳
-      const cause = deathCauses[hash % deathCauses.length];
+      function seededRandom(min, max) {
+        const x = Math.sin(seed++) * 10000;
+        return Math.floor((x - Math.floor(x)) * (max - min + 1)) + min;
+      }
+
+      const causes = [
+        "事故", "寿命", "未知の病", "突然死", "戦い", "笑いすぎ", "重力", "神の怒り", "未知との遭遇"
+      ];
+      const comments = [
+        "よく頑張った……。",
+        "割と普通ですね。",
+        "ドラマのような人生でした。",
+        "天晴れ！",
+        "とても惜しまれる最後。",
+        "少し無茶しすぎたようです。",
+        "選ばれし者でした。",
+        "かなり稀なケースです。",
+        "記録に残る死でした。"
+      ];
+
+      const age = seededRandom(20, 120);
+      const cause = causes[seededRandom(0, causes.length - 1)];
+      const comment = comments[seededRandom(0, comments.length - 1)];
+
+      // 寿命に応じて色分け
+      let ageClass = "";
+      if (age >= 90) {
+        ageClass = "long-life";
+      } else if (age >= 60) {
+        ageClass = "average-life";
+      } else {
+        ageClass = "short-life";
+      }
 
       const resultDiv = document.getElementById("result");
       resultDiv.innerHTML = `
-        <p>💀 <strong>${name}</strong>さんの寿命は <strong>${lifespan}歳</strong> です。</p>
-        <p>死因は... <strong>${cause}</strong> です。</p>
+        <p><strong>${name}</strong>さんの寿命は <span class="${ageClass}">${age}歳</span> です。</p>
+        <p>死因：<strong>${cause}</strong></p>
+        <p class="comment">「${comment}」</p>
       `;
       resultDiv.style.display = "block";
     }
