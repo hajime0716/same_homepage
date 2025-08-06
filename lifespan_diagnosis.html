@@ -1,144 +1,81 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <title>鮫の遊び場 - 寿命・死因診断</title>
+  <meta charset="UTF-8">
+  <title>鮫の遊び場 - 寿命診断</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       text-align: center;
-      background-color: #eef6fa;
+      background-color: #f0f8ff;
       padding: 50px 20px;
     }
     h1 {
       color: #333;
-      font-size: 2em;
-    }
-    form {
-      background: #fff;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      display: inline-block;
-      max-width: 400px;
-      width: 100%;
-    }
-    label {
-      font-size: 18px;
-      display: block;
-      margin-bottom: 10px;
-      color: #444;
     }
     input[type="text"] {
-      width: 100%;
-      font-size: 18px;
       padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      margin-bottom: 15px;
+      font-size: 18px;
+      width: 300px;
+      margin: 20px 0;
     }
     button {
+      padding: 10px 20px;
       font-size: 18px;
-      padding: 10px 25px;
-      background-color: #0080ff;
-      color: white;
-      border: none;
-      border-radius: 6px;
       cursor: pointer;
-      transition: background-color 0.3s;
     }
-    button:hover {
-      background-color: #005fcc;
+    .result {
+      margin-top: 30px;
+      font-size: 22px;
     }
-    .error {
-      color: red;
-      font-weight: bold;
-    }
-    .back-link {
-      display: inline-block;
-      margin-bottom: 30px;
-      font-size: 16px;
-      color: #0080ff;
-      text-decoration: none;
-    }
-    .back-link:hover {
-      text-decoration: underline;
-    }
-    #result {
-      margin-top: 25px;
+    .comment {
+      margin-top: 15px;
       font-size: 18px;
-      line-height: 1.6;
-      white-space: pre-wrap;
+      color: #666;
     }
   </style>
 </head>
 <body>
+  <a href="index.html">← ホームに戻る</a>
+  <h1>寿命診断</h1>
 
-  <a href="index.html" class="back-link">← ホームに戻る</a>
+  <!-- 入力フォーム -->
+  <p>あなたの名前を入力してください：</p>
+  <input type="text" id="nameInput" placeholder="例：たろう" />
+  <br />
+  <button onclick="diagnose()">診断する</button>
 
-  <h1>名前で寿命・死因診断</h1>
-
-  <form onsubmit="checkFate(event)">
-    <label for="nameInput">あなたの名前を入力してください：</label>
-    <input type="text" id="nameInput" placeholder="例：さめ子" />
-    <button type="submit">診断する</button>
-  </form>
-
-  <div id="result"></div>
+  <!-- 結果表示エリア -->
+  <div class="result" id="resultArea"></div>
+  <div class="comment" id="commentArea"></div>
 
   <script>
-    function checkFate(e) {
-      e.preventDefault();
+    function diagnose() {
+      const name = document.getElementById("nameInput").value;
+      if (!name) return;
 
-      const name = document.getElementById('nameInput').value.trim();
-      const resultElement = document.getElementById('result');
-      resultElement.classList.remove('error');
-      resultElement.innerText = '';
+      // 疑似的な寿命計算（ここでは名前の長さ×10 + ランダム要素）
+      const base = name.length * 10;
+      const random = Math.floor(Math.random() * 60);
+      const life = base + random;
 
-      if (name === '') {
-        resultElement.classList.add('error');
-        resultElement.innerText = '⚠️ 名前を入力してください。';
-        return;
+      // 結果表示
+      document.getElementById("resultArea").textContent = `🧬 ${name}の寿命は【${life}歳】です！`;
+
+      // コメント表示（寿命に応じて変化）
+      let comment = "";
+      if (life >= 100) {
+        comment = "不老不死に近い存在かも…！";
+      } else if (life >= 80) {
+        comment = "かなりの長寿タイプですね。";
+      } else if (life >= 50) {
+        comment = "平均的な寿命です。健康第一！";
+      } else {
+        comment = "健康に気をつけてくださいね。";
       }
 
-      // 固定値算出用シード
-      let seed = 0;
-      for (let i = 0; i < name.length; i++) {
-        seed += name.charCodeAt(i) * (i + 1);
-      }
-
-      const lifespans = ["22歳", "35歳", "47歳", "63歳", "75歳", "86歳", "99歳", "108歳", "120歳"];
-      const deaths = [
-        "クレーンに挟まれて死亡",
-        "ガチャ爆死のショックで死亡",
-        "伝説のアイテムをめぐる戦争",
-        "トラックに轢かれる",
-        "UFOに連れ去られ消息不明",
-        "マグマに落ちた",
-        "老衰で安らかに眠る",
-        "空からパンが降ってきて死亡",
-        "時間の狭間に迷い込んだ"
-      ];
-      const comments = [
-        "長い人生でしたね。でも最後が壮絶すぎます。",
-        "もうちょっと生きたかったですね…",
-        "最高の人生、お疲れさまでした！",
-        "なんという結末……",
-        "運命とは、残酷なものです。",
-        "あなたの伝説は語り継がれるでしょう。",
-        "次はもっと平和な人生を…"
-      ];
-
-      const life = lifespans[seed % lifespans.length];
-      const death = deaths[seed % deaths.length];
-      const comment = comments[seed % comments.length];
-
-      resultElement.innerHTML =
-        `<span class="life">🕰️ 寿命：${life}</span><br>` +
-        `<span class="death">💀 死因：${death}</span><br>` +
-        `<span class="comment">💬 コメント：${comment}</span>`;
+      document.getElementById("commentArea").textContent = `💬 コメント：${comment}`;
     }
   </script>
-
 </body>
 </html>
