@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>名前で強さ診断</title>
   <style>
     body {
@@ -10,12 +10,10 @@
       background-color: #eef6fa;
       padding: 50px 20px;
     }
-
     h1 {
       color: #333;
       font-size: 2em;
     }
-
     form {
       background: #fff;
       padding: 25px;
@@ -25,14 +23,12 @@
       max-width: 400px;
       width: 100%;
     }
-
     label {
       font-size: 18px;
       display: block;
       margin-bottom: 10px;
       color: #444;
     }
-
     input[type="text"] {
       width: 100%;
       font-size: 18px;
@@ -41,7 +37,6 @@
       border-radius: 6px;
       margin-bottom: 15px;
     }
-
     button {
       font-size: 18px;
       padding: 10px 25px;
@@ -52,13 +47,25 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
-
     button:hover {
       background-color: #005fcc;
     }
     .error {
       color: red;
       font-weight: bold;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 18px;
+      white-space: pre-line;
+      padding: 20px;
+      background-color: #fff;
+      border-left: 5px solid #0080ff;
+      border-radius: 8px;
+      display: inline-block;
+      text-align: left;
+      max-width: 500px;
+      word-break: break-word;
     }
   </style>
 </head>
@@ -68,7 +75,7 @@
 
   <form onsubmit="checkStrength(event)">
     <label for="nameInput">あなたの名前を入力してください：</label>
-    <input type="text" id="nameInput" placeholder="例：ネコ太郎">
+    <input type="text" id="nameInput" placeholder="例：ネコ太郎" />
     <button type="submit">診断する</button>
   </form>
 
@@ -76,69 +83,104 @@
 
   <script>
     function checkStrength(e) {
-  e.preventDefault();
+      e.preventDefault();
 
-  const name = document.getElementById('nameInput').value.trim();
-  const resultElement = document.getElementById('result');
+      const name = document.getElementById('nameInput').value.trim();
+      const resultElement = document.getElementById('result');
 
-  // リセット
-  resultElement.classList.remove('error');
-  resultElement.innerText = '';
+      // リセット
+      resultElement.classList.remove('error');
+      resultElement.innerText = '';
 
-  // 入力チェック
-  if (name === '') {
-    resultElement.classList.add('error');
-    resultElement.innerText = '⚠️ 名前を入力してください。';
-    resultElement.style.display = 'block';
-    return;
-  }
+      // 入力チェック
+      if (name === '') {
+        resultElement.classList.add('error');
+        resultElement.innerText = '⚠️ 名前を入力してください。';
+        resultElement.style.display = 'block';
+        return;
+      }
+      if (name.length > 150) {
+        resultElement.classList.add('error');
+        resultElement.innerText = '⚠️ 名前が長すぎます。150文字以内で入力してください。';
+        resultElement.style.display = 'block';
+        return;
+      }
 
-  if (name.length > 150) {
-    resultElement.classList.add('error');
-    resultElement.innerText = '⚠️ 名前が長すぎます。150文字以内で入力してください。';
-    resultElement.style.display = 'block';
-    return;
-  }
+      // 「野獣先輩」なら特別扱い
+      if (name === '野獣先輩') {
+        const strength = '∞';  // 無限大
+        const title = '最強の伝説';
+        const comment = 'あなたは伝説の存在、強さは無限大です！';
+        const selectedSkills = ['狂乱の突進', '無敵の壁', '永遠の咆哮'];
 
-  // シード値生成
-  let seed = 0;
-  for (let i = 0; i < name.length; i++) {
-    seed += name.charCodeAt(i) * (i + 1);
-  }
+        resultElement.innerText =
+          `✨ ${name}の強さは【${strength}】！\n😊 称号：『${title}』\n🪨 スキル：${selectedSkills.join('、')}\n💬 コメント：${comment}`;
+        resultElement.style.display = 'block';
+        return;
+      }
 
-  // 強さ（1000～9999）
-  const strength = (seed % 9000) + 1000;
+      // シード値生成
+      let seed = 0;
+      for (let i = 0; i < name.length; i++) {
+        seed += name.charCodeAt(i) * (i + 1);
+      }
 
-  // 称号リスト
-  const titles = [
-    '眠れる虎', '伝説の鍛冶師', '時空の旅人', '最終兵器',
-    '暴走魔王', '静かなる守護者', '世界の果ての王', '笑顔の破壊神',
-    '無限の猫使い', '禁断のレシピ使い', '冥界のギタリスト', '未来の王'
-  ];
-  const title = titles[seed % titles.length];
+      // 強さ（1000～9999）
+      const strength = (seed % 9000) + 1000;
 
-  // スキルリスト
-  const skills = [
-    '爆裂ハイキック', '超重スラッシュ', '影分身', '無限ねこじゃらし',
-    'ダークフレイム', '空間切り', '正義のパンチ', '眠気ビーム',
-    'スターダストダンス', '電光石火', '不死鳥の羽ばたき',
-    '雷の一閃', 'ブラックホールクラッシュ', 'タイムストップ'
-  ];
+      // 称号リスト（「なし」も入れて称号なし判定）
+      const titles = [
+        '眠れる虎', '伝説の鍛冶師', '時空の旅人', '最終兵器',
+        '暴走魔王', '静かなる守護者', '世界の果ての王', '笑顔の破壊神',
+        '無限の猫使い', '禁断のレシピ使い', '冥界のギタリスト', '未来の王',
+        'なし'
+      ];
+      const title = titles[seed % titles.length];
 
-  // スキル選出（重複なし）
-  const selectedSkills = [];
-  for (let i = 0; i < 3; i++) {
-    const index = (seed + i * 7) % skills.length;
-    if (!selectedSkills.includes(skills[index])) {
-      selectedSkills.push(skills[index]);
+      // 一言コメント（称号の有無で分岐）
+      let comment = '';
+      if (title === 'なし') {
+        if (strength < 3000) {
+          comment = 'まだまだ修行が必要です。称号はまだありません。';
+        } else if (strength < 6000) {
+          comment = '実力はあるのに称号はまだ獲得できていません。';
+        } else {
+          comment = '強いのに称号がありません。不思議ですね。';
+        }
+      } else {
+        if (strength < 3000) {
+          comment = 'まだまだ修行が必要です。';
+        } else if (strength < 6000) {
+          comment = 'なかなかの実力者ですね！';
+        } else if (strength < 9000) {
+          comment = 'あなたの強さは伝説級です！';
+        } else {
+          comment = '最強…この世の理を超えています！';
+        }
+      }
+
+      // スキルリスト
+      const skills = [
+        '爆裂ハイキック', '超重スラッシュ', '影分身', '無限ねこじゃらし',
+        'ダークフレイム', '空間切り', '正義のパンチ', '眠気ビーム',
+        'スターダストダンス', '電光石火', '不死鳥の羽ばたき',
+        '雷の一閃', 'ブラックホールクラッシュ', 'タイムストップ'
+      ];
+
+      // スキル選出（重複なし）
+      const selectedSkills = [];
+      for (let i = 0; i < 3; i++) {
+        const index = (seed + i * 7) % skills.length;
+        if (!selectedSkills.includes(skills[index])) {
+          selectedSkills.push(skills[index]);
+        }
+      }
+
+      // 結果表示
+      resultElement.innerText =
+        `✨ ${name}の強さは【${strength}】！\n😊 称号：『${title}』\n🪨 スキル：${selectedSkills.join('、')}\n💬 コメント：${comment}`;
+      resultElement.style.display = 'block';
     }
-  }
-
-  // 結果表示
-  resultElement.innerText =
-    `✨ ${name}の強さは【${strength}】！\n😊 称号：『${title}』\n🪨 スキル：${selectedSkills.join('、')}`;
-  resultElement.style.display = 'block';
-}
   </script>
 
 </body>
