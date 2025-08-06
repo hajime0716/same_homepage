@@ -54,9 +54,22 @@
       color: red;
       font-weight: bold;
     }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 30px;
+      font-size: 16px;
+      color: #0080ff;
+      text-decoration: none;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
+
+  <!-- ホームへのリンク -->
+  <a href="index.html" class="back-link">← ホームに戻る</a>
 
   <h1>名前で強さ診断</h1>
 
@@ -75,11 +88,9 @@
       const name = document.getElementById('nameInput').value.trim();
       const resultElement = document.getElementById('result');
 
-      // リセット
       resultElement.classList.remove('error');
       resultElement.innerText = '';
 
-      // 入力チェック
       if (name === '') {
         resultElement.classList.add('error');
         resultElement.innerText = '⚠️ 名前を入力してください。';
@@ -92,10 +103,9 @@
         resultElement.style.display = 'block';
         return;
       }
-      
-      // 「野獣先輩」なら特別扱い
+
       if (name === '野獣先輩') {
-        const strength = '∞';  // 無限大
+        const strength = '∞';
         const title = '最強の伝説';
         const comment = 'あなたは伝説の存在、強さは無限大です！';
         const selectedSkills = ['イキスギィ', 'やりますねぇ', '野獣の咆哮'];
@@ -106,16 +116,13 @@
         return;
       }
 
-      // シード値生成
       let seed = 0;
       for (let i = 0; i < name.length; i++) {
         seed += name.charCodeAt(i) * (i + 1);
       }
 
-      // 強さ（1000～9999）
       const strength = (seed % 9000) + 1000;
 
-      // 称号リスト（「なし」も入れて称号なし判定）
       const titles = [
         '眠れる虎', '伝説の鍛冶師', '時空の旅人', '最終兵器',
         '暴走魔王', '静かなる守護者', '世界の果ての王', '笑顔の破壊神',
@@ -124,7 +131,6 @@
       ];
       const title = titles[seed % titles.length];
 
-      // 一言コメント（称号の有無で分岐）
       let comment = '';
       if (title === 'なし') {
         if (strength < 3000) {
@@ -146,7 +152,6 @@
         }
       }
 
-      // スキルリスト
       const skills = [
         '爆裂ハイキック', '超重スラッシュ', '影分身', '無限ねこじゃらし',
         'ダークフレイム', '空間切り', '正義のパンチ', '眠気ビーム',
@@ -154,7 +159,6 @@
         '雷の一閃', 'ブラックホールクラッシュ', 'タイムストップ'
       ];
 
-      // スキル選出（重複なし）
       const selectedSkills = [];
       for (let i = 0; i < 3; i++) {
         const index = (seed + i * 7) % skills.length;
@@ -163,7 +167,6 @@
         }
       }
 
-      // 結果表示
       resultElement.innerText =
         `✨ ${name}の強さは【${strength}】！\n😊 称号：『${title}』\n🪨 スキル：${selectedSkills.join('、')}\n💬 コメント：${comment}`;
       resultElement.style.display = 'block';
