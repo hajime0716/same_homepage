@@ -150,6 +150,13 @@
       // 結果表示
       resultElement.innerText =
         `✨ ${name}の強さは【${strength}】！\n🧿 称号：『${title}』\n🛠 スキル：${selectedSkills.join('、')}`;
+
+      if (name === "") {
+        document.getElementById("strength").innerText = "";
+        document.getElementById("skill").innerText = "";
+        document.getElementById("title").innerText = "";
+      return;
+}
     }
   </script>
 
