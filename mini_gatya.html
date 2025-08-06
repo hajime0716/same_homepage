@@ -13,7 +13,7 @@
     }
     h1 {
       font-size: 2em;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
     button {
       font-size: 18px;
@@ -31,7 +31,7 @@
     }
     a.back-link {
       display: inline-block;
-      margin-top: 30px;
+      margin-bottom: 30px;
       color: #0080ff;
       text-decoration: none;
       font-size: 16px;
@@ -39,13 +39,41 @@
     a.back-link:hover {
       text-decoration: underline;
     }
+    .rarity-table {
+      margin-bottom: 30px;
+      font-size: 16px;
+    }
+    .rarity-label {
+      font-weight: bold;
+    }
+    .ノーマル { color: #555; }
+    .レア { color: #007bff; }
+    .エピック { color: #8000ff; }
+    .レジェンダリー { color: #ff8000; }
+    .神話級 { color: #d400ff; }
+
+    #result {
+      margin-top: 30px;
+      white-space: pre-wrap;
+      text-align: left;
+      display: inline-block;
+      font-size: 18px;
+    }
   </style>
 </head>
 <body>
 
   <a href="index.html" class="back-link">← ホームに戻る</a>
-  
+
   <h1>ミニガチャ（10連）</h1>
+
+  <div class="rarity-table">
+    <div><span class="rarity-label ノーマル">ノーマル</span>: グレー</div>
+    <div><span class="rarity-label レア">レア</span>: ブルー</div>
+    <div><span class="rarity-label エピック">エピック</span>: パープル</div>
+    <div><span class="rarity-label レジェンダリー">レジェンダリー</span>: オレンジ</div>
+    <div><span class="rarity-label 神話級">神話級</span>: マゼンタ</div>
+  </div>
 
   <button id="tenBtn">ガチャを引く</button>
 
@@ -53,18 +81,25 @@
 
   <script>
     const items = [
-      { name: '★レアソード', rarity: 'レア' },
-      { name: '☆ノーマルシールド', rarity: 'ノーマル' },
-      { name: '★★★伝説の杖', rarity: '超レア' },
-      { name: '☆回復ポーション', rarity: 'ノーマル' },
-      { name: '★強化リング', rarity: 'レア' },
-      { name: '☆☆☆普通の帽子', rarity: 'ノーマル' },
-      { name: '★★勇者の盾', rarity: 'レア' },
-      { name: '★★★ドラゴンアーマー', rarity: '超レア' }
+      { name: '★1 木の棒', rarity: 'ノーマル' },
+      { name: '★1 回復ポーション', rarity: 'ノーマル' },
+      { name: '★2.5 強化リング', rarity: 'レア' },
+      { name: '★5 勇者の盾', rarity: 'レア' },
+      { name: '★8 ドラゴンアーマー', rarity: 'エピック' },
+      { name: '★9 幻影の剣', rarity: 'エピック' },
+      { name: '★10 神の雷槍', rarity: 'レジェンダリー' },
+      { name: '★10 フレイムセイバー', rarity: 'レジェンダリー' },
+      { name: '★12 天の逆鉾', rarity: '神話級' },
+      { name: '★13 八咫鏡', rarity: '神話級' },
+      { name: '★13 草薙の剣', rarity: '神話級' },
+      { name: '★14 宇宙の槍ギャラクシア', rarity: '神話級' },
+      { name: '★1 普通の帽子', rarity: 'ノーマル' },
+      { name: '★2 木の弓', rarity: 'ノーマル' },
+      { name: '★6 氷の大剣', rarity: 'レア' },
+      { name: '★7 暗黒の杖', rarity: 'エピック' }
     ];
 
     const COOLDOWN = 24 * 60 * 60 * 1000;
-
     const resultEl = document.getElementById('result');
     const tenBtn = document.getElementById('tenBtn');
 
@@ -86,19 +121,36 @@
       localStorage.setItem(getKey(type), Date.now().toString());
     }
 
-    // ノーマルだけからランダム抽選
-    function drawNormal() {
-      const normalItems = items.filter(item => item.rarity === 'ノーマル');
-      const index = Math.floor(Math.random() * normalItems.length);
-      return normalItems[index];
+    // ノーマル以上からランダムに抽選
+    function drawItem() {
+      const weights = {
+        'ノーマル': 60,
+        'レア': 25,
+        'エピック': 10,
+        'レジェンダリー': 4,
+        '神話級': 1
+      };
+
+      const pool = [];
+      for (const item of items) {
+        const weight = weights[item.rarity] || 0;
+        for (let i = 0; i < weight; i++) {
+          pool.push(item);
+        }
+      }
+
+      const index = Math.floor(Math.random() * pool.length);
+      return pool[index];
     }
 
     function showResult(list) {
-      let text = '🎉 あなたのガチャ結果:\n';
+      resultEl.innerHTML = '';
       list.forEach((item, i) => {
-        text += `${i+1}. ${item.name}（${item.rarity}）\n`;
+        const div = document.createElement('div');
+        div.className = item.rarity;
+        div.textContent = `${i + 1}. ${item.name}（${item.rarity}）`;
+        resultEl.appendChild(div);
       });
-      resultEl.textContent = text.trim();
     }
 
     tenBtn.addEventListener('click', () => {
@@ -106,10 +158,12 @@
         alert('⚠️ ガチャは24時間経過するまで引けません。');
         return;
       }
+
       const results = [];
       for (let i = 0; i < 10; i++) {
-        results.push(drawNormal());
+        results.push(drawItem());
       }
+
       showResult(results);
       setDrawTime('ten');
     });
