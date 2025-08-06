@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>名前で強さ診断</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 50px;
+      background-color: #f0f8ff;
+    }
+    input, button {
+      font-size: 18px;
+      padding: 10px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 20px;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+  <h1>名前で強さ診断</h1>
+  <input type="text" id="nameInput" placeholder="名前を入力">
+  <button onclick="checkStrength()">診断する</button>
+  <p id="result"></p>
+
+  <script>
+    function checkStrength() {
+      const name = document.getElementById('nameInput').value.trim();
+      const resultElement = document.getElementById('result');
+
+      if (name === '') {
+        resultElement.innerText = '名前を入力してください。';
+        return;
+      }
+
+      const lower = name.toLowerCase();
+
+      // 特別処理: 特定文字が含まれている場合
+      if (name.includes("猫") || lower.includes("ねこ") || name.includes("ネコ")) {
+        resultElement.innerText =
+          `${name}の強さは 9999！\n称号：究極のねこ戦士\nスキル：ねこぱんち、ふみふみビーム、にゃんこブレード`;
+        return;
+      }
+
+      if (name.includes("龍") || name.includes("竜")) {
+        resultElement.innerText =
+          `${name}の強さは 8888！\n称号：天空の覇者\nスキル：ドラゴンブレス、雷の咆哮、飛翔の翼`;
+        return;
+      }
+
+      if (name.includes("魔")) {
+        resultElement.innerText =
+          `${name}の強さは 7777！\n称号：暗黒の支配者\nスキル：ダークフレイム、虚無の波動、漆黒の鎖`;
+        return;
+      }
+
+      if (name.includes("王")) {
+        resultElement.innerText =
+          `${name}の強さは 8500！\n称号：大地の王\nスキル：王の威光、全軍突撃、玉座の加護`;
+        return;
+      }
+
+      // 通常処理（上記に該当しない場合）
+      let seed = 0;
+      for (let i = 0; i < name.length; i++) {
+        seed += name.charCodeAt(i) * (i + 1);
+      }
+      const strength = (seed % 9000) + 1000;
+
+      const titles = [
+        '眠れる虎', '伝説の鍛冶師', '時空の旅人', '最終兵器',
+        '暴走魔王', '静かなる守護者', '世界の果ての王', '笑顔の破壊神'
+      ];
+      const title = titles[seed % titles.length];
+
+      const skills = [
+        '爆裂ハイキック', '超重スラッシュ', '影分身', '無限ねこじゃらし',
+        'ダークフレイム', '空間切り', '正義のパンチ', '眠気ビーム',
+        'スターダストダンス', '電光石火', '不死鳥の羽ばたき'
+      ];
+
+      const selectedSkills = [];
+      for (let i = 0; i < 3; i++) {
+        const index = (seed + i * 3) % skills.length;
+        selectedSkills.push(skills[index]);
+      }
+
+      resultElement.innerText =
+        `${name}の強さは ${strength}！\n称号：${title}\nスキル：${selectedSkills.join('、')}`;
+    }
+  </script>
+</body>
+</html>
