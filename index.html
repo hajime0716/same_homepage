@@ -56,21 +56,6 @@
     button:hover {
       background-color: #005fcc;
     }
-
-    #result {
-      margin-top: 30px;
-      font-size: 18px;
-      white-space: pre-line;
-      padding: 20px;
-      background-color: #fff;
-      border-left: 5px solid #0080ff;
-      border-radius: 8px;
-      display: inline-block;
-      text-align: left;
-      max-width: 500px;
-      word-break: break-word;
-    }
-
     .error {
       color: red;
       font-weight: bold;
@@ -108,9 +93,9 @@
     return;
   }
 
-  if (name.length > 20) {
+  if (name.length > 150) {
     resultElement.classList.add('error');
-    resultElement.innerText = '⚠️ 名前が長すぎます。20文字以内で入力してください。';
+    resultElement.innerText = '⚠️ 名前が長すぎます。150文字以内で入力してください。';
     resultElement.style.display = 'block';
     return;
   }
@@ -151,7 +136,7 @@
 
   // 結果表示
   resultElement.innerText =
-    `✨ ${name}の強さは【${strength}】！\n🧿 称号：『${title}』\n🛠 スキル：${selectedSkills.join('、')}`;
+    `✨ ${name}の強さは【${strength}】！\n😊 称号：『${title}』\n🪨 スキル：${selectedSkills.join('、')}`;
   resultElement.style.display = 'block';
 }
   </script>
