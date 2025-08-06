@@ -2,114 +2,119 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>寿命と死因診断</title>
+  <title>寿命診断</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       text-align: center;
-      background-color: #e8eef5;
+      background-color: #eef6fa;
       padding: 50px 20px;
-      color: #333;
+    }
+
+    a {
+      display: block;
+      color: #007bff;
+      text-decoration: none;
+      margin-bottom: 20px;
     }
 
     h1 {
-      color: #2c3e50;
+      font-size: 2em;
+      color: #333;
+      font-weight: bold;
+    }
+
+    .diagnosis-box {
+      background-color: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      max-width: 500px;
+      margin: 0 auto;
     }
 
     input[type="text"] {
+      width: 80%;
       padding: 10px;
-      font-size: 16px;
-      width: 250px;
-      margin-bottom: 10px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 20px;
     }
 
     button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #2980b9;
+      background-color: #007bff;
       color: white;
       border: none;
-      border-radius: 5px;
+      padding: 10px 30px;
+      font-size: 1em;
+      border-radius: 8px;
       cursor: pointer;
     }
 
-    #result {
+    .result {
       margin-top: 30px;
-      font-size: 18px;
-      background-color: #ffffff;
-      padding: 20px;
-      border-radius: 10px;
-      display: none;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      font-size: 1.2em;
+      font-weight: bold;
     }
 
-    .long-life { color: green; font-weight: bold; }
-    .average-life { color: orange; font-weight: bold; }
-    .short-life { color: red; font-weight: bold; }
-    .comment { font-style: italic; margin-top: 10px; }
+    .short { color: red; }        /* 短命 */
+    .average { color: orange; }   /* 平均 */
+    .long { color: green; }       /* 長寿 */
   </style>
 </head>
 <body>
-  <h1>寿命と死因診断</h1>
-  <input type="text" id="nameInput" placeholder="名前を入力してください" />
-  <button onclick="diagnose()">診断する</button>
-  <div id="result"></div>
+
+  <a href="index.html">← ホームに戻る</a>
+
+  <h1>寿命診断</h1>
+
+  <div class="diagnosis-box">
+    <p>あなたの名前を入力してください：</p>
+    <input type="text" id="nameInput" placeholder="例：イカ次郎" />
+    <br>
+    <button onclick="diagnose()">診断する</button>
+
+    <div id="result" class="result"></div>
+  </div>
 
   <script>
     function diagnose() {
-      const name = document.getElementById("nameInput").value.trim();
-      if (!name) {
-        alert("名前を入力してください！");
-        return;
-      }
+      const name = document.getElementById('nameInput').value.trim();
+      if (!name) return;
 
-      let seed = 0;
-      for (let i = 0; i < name.length; i++) {
-        seed += name.charCodeAt(i) * (i + 1);
-      }
-
-      function seededRandom(min, max) {
-        const x = Math.sin(seed++) * 10000;
-        return Math.floor((x - Math.floor(x)) * (max - min + 1)) + min;
-      }
-
-      const causes = [
-        "事故", "寿命", "未知の病", "突然死", "戦い", "笑いすぎ", "重力", "神の怒り", "未知との遭遇", "推しにあってキュン死", "タンスに小指ぶつけて死亡", "後ろから刺された"
-      ];
+      // 疑似的な寿命と死因
+      const ages = [22, 37, 49, 65, 78, 88, 102];
+      const causes = ["たこ焼きにむせて", "雷に打たれて", "笑いすぎて", "ロケット事故", "AIに敗北", "突然消滅", "寿命で"];
       const comments = [
-        "よく頑張った……。",
-        "割と普通ですね。",
-        "ドラマのような人生でした。",
-        "天晴れ！",
-        "とても惜しまれる最後。",
-        "少し無茶しすぎたようです。",
-        "選ばれし者でした。",
-        "かなり稀なケースです。",
-        "記録に残る死でした。"
+        "短命ですね…健康に気をつけて！",
+        "ちょっと早めの旅立ち…ご冥福を。",
+        "惜しい人を亡くしました。",
+        "平均的な寿命ですね。",
+        "よく頑張りました！",
+        "立派な人生でした！",
+        "大往生！みんなに惜しまれながら…"
       ];
 
-      const age = seededRandom(20, 120);
-      const cause = causes[seededRandom(0, causes.length - 1)];
-      const comment = comments[seededRandom(0, comments.length - 1)];
+      const index = name.length % ages.length;
+      const age = ages[index];
+      const cause = causes[index];
+      const comment = comments[index];
 
-      // 寿命に応じて色分け
-      let ageClass = "";
-      if (age >= 90) {
-        ageClass = "long-life";
-      } else if (age >= 60) {
-        ageClass = "average-life";
+      let cssClass = "";
+      if (age < 40) {
+        cssClass = "short";  // 短命 → 赤
+      } else if (age < 80) {
+        cssClass = "average";  // 平均 → オレンジ
       } else {
-        ageClass = "short-life";
+        cssClass = "long";  // 長寿 → 緑
       }
 
-      const resultDiv = document.getElementById("result");
-      resultDiv.innerHTML = `
-        <p><strong>${name}</strong>さんの寿命は <span class="${ageClass}">${age}歳</span> です。</p>
-        <p>死因：<strong>${cause}</strong></p>
-        <p class="comment">「${comment}」</p>
-      `;
-      resultDiv.style.display = "block";
+      // 結果表示
+      document.getElementById('result').innerHTML =
+        `<span class="${cssClass}">${name}さんは ${age}歳で「${cause}」亡くなります。<br>${comment}</span>`;
     }
   </script>
+
 </body>
 </html>
