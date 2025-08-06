@@ -91,73 +91,69 @@
 
   <script>
     function checkStrength(e) {
-      e.preventDefault(); // フォームのリロード防止
+  e.preventDefault();
 
-      const name = document.getElementById('nameInput').value.trim();
-      const resultElement = document.getElementById('result');
+  const name = document.getElementById('nameInput').value.trim();
+  const resultElement = document.getElementById('result');
 
-      // リセット
-      resultElement.classList.remove('error');
-      resultElement.innerText = '';
+  // リセット
+  resultElement.classList.remove('error');
+  resultElement.innerText = '';
 
-      // 入力チェック
-      if (name === '') {
-        resultElement.classList.add('error');
-        resultElement.innerText = '⚠️ 名前を入力してください。';
-        return;
-      }
+  // 入力チェック
+  if (name === '') {
+    resultElement.classList.add('error');
+    resultElement.innerText = '⚠️ 名前を入力してください。';
+    resultElement.style.display = 'block';
+    return;
+  }
 
-      if (name.length > 20) {
-        resultElement.classList.add('error');
-        resultElement.innerText = '⚠️ 名前が長すぎます。20文字以内で入力してください。';
-        return;
-      }
+  if (name.length > 20) {
+    resultElement.classList.add('error');
+    resultElement.innerText = '⚠️ 名前が長すぎます。20文字以内で入力してください。';
+    resultElement.style.display = 'block';
+    return;
+  }
 
-      // シード値生成
-      let seed = 0;
-      for (let i = 0; i < name.length; i++) {
-        seed += name.charCodeAt(i) * (i + 1);
-      }
+  // シード値生成
+  let seed = 0;
+  for (let i = 0; i < name.length; i++) {
+    seed += name.charCodeAt(i) * (i + 1);
+  }
 
-      // 強さ（1000～9999）
-      const strength = (seed % 9000) + 1000;
+  // 強さ（1000～9999）
+  const strength = (seed % 9000) + 1000;
 
-      // 称号リスト
-      const titles = [
-        '眠れる虎', '伝説の鍛冶師', '時空の旅人', '最終兵器',
-        '暴走魔王', '静かなる守護者', '世界の果ての王', '笑顔の破壊神',
-        '無限の猫使い', '禁断のレシピ使い', '冥界のギタリスト', '未来の王'
-      ];
-      const title = titles[seed % titles.length];
+  // 称号リスト
+  const titles = [
+    '眠れる虎', '伝説の鍛冶師', '時空の旅人', '最終兵器',
+    '暴走魔王', '静かなる守護者', '世界の果ての王', '笑顔の破壊神',
+    '無限の猫使い', '禁断のレシピ使い', '冥界のギタリスト', '未来の王'
+  ];
+  const title = titles[seed % titles.length];
 
-      // スキルリスト
-      const skills = [
-        '爆裂ハイキック', '超重スラッシュ', '影分身', '無限ねこじゃらし',
-        'ダークフレイム', '空間切り', '正義のパンチ', '眠気ビーム',
-        'スターダストダンス', '電光石火', '不死鳥の羽ばたき',
-        '雷の一閃', 'ブラックホールクラッシュ', 'タイムストップ'
-      ];
+  // スキルリスト
+  const skills = [
+    '爆裂ハイキック', '超重スラッシュ', '影分身', '無限ねこじゃらし',
+    'ダークフレイム', '空間切り', '正義のパンチ', '眠気ビーム',
+    'スターダストダンス', '電光石火', '不死鳥の羽ばたき',
+    '雷の一閃', 'ブラックホールクラッシュ', 'タイムストップ'
+  ];
 
-      // スキル選出（重複なし）
-      const selectedSkills = [];
-      for (let i = 0; i < 3; i++) {
-        const index = (seed + i * 7) % skills.length;
-        if (!selectedSkills.includes(skills[index])) {
-          selectedSkills.push(skills[index]);
-        }
-      }
-
-      // 結果表示
-      resultElement.innerText =
-        `✨ ${name}の強さは【${strength}】！\n🧿 称号：『${title}』\n🛠 スキル：${selectedSkills.join('、')}`;
-
-      if (name === "") {
-        document.getElementById("strength").innerText = "";
-        document.getElementById("skill").innerText = "";
-        document.getElementById("title").innerText = "";
-      return;
-}
+  // スキル選出（重複なし）
+  const selectedSkills = [];
+  for (let i = 0; i < 3; i++) {
+    const index = (seed + i * 7) % skills.length;
+    if (!selectedSkills.includes(skills[index])) {
+      selectedSkills.push(skills[index]);
     }
+  }
+
+  // 結果表示
+  resultElement.innerText =
+    `✨ ${name}の強さは【${strength}】！\n🧿 称号：『${title}』\n🛠 スキル：${selectedSkills.join('、')}`;
+  resultElement.style.display = 'block';
+}
   </script>
 
 </body>
