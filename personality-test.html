@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>ミニ性格診断</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #eef6fa;
+      padding: 40px 20px;
+      text-align: center;
+      color: #333;
+    }
+    h1 {
+      font-size: 2em;
+      margin-bottom: 30px;
+    }
+    form {
+      background: #fff;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 480px;
+      margin: 0 auto 30px;
+      text-align: left;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    label {
+      margin-left: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button {
+      font-size: 18px;
+      background-color: #0080ff;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      display: block;
+      margin: 0 auto;
+    }
+    button:hover {
+      background-color: #005fcc;
+    }
+    #result {
+      background: #fff;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      font-size: 18px;
+      white-space: pre-line;
+    }
+    a.back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #0080ff;
+      text-decoration: none;
+      font-size: 16px;
+    }
+    a.back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>ミニ性格診断</h1>
+
+  <form id="personalityForm" onsubmit="checkPersonality(event)">
+    <div class="question">
+      <strong>1. 新しいことにチャレンジするのが好きですか？</strong><br />
+      <input type="radio" id="q1_yes" name="q1" value="yes" required>
+      <label for="q1_yes">はい</label>
+      <input type="radio" id="q1_no" name="q1" value="no">
+      <label for="q1_no">いいえ</label>
+    </div>
+
+    <div class="question">
+      <strong>2. 人と話すより、一人の時間を大切にしたいですか？</strong><br />
+      <input type="radio" id="q2_yes" name="q2" value="yes" required>
+      <label for="q2_yes">はい</label>
+      <input type="radio" id="q2_no" name="q2" value="no">
+      <label for="q2_no">いいえ</label>
+    </div>
+
+    <div class="question">
+      <strong>3. 計画を立てるより、その場の気分で動くタイプですか？</strong><br />
+      <input type="radio" id="q3_yes" name="q3" value="yes" required>
+      <label for="q3_yes">はい</label>
+      <input type="radio" id="q3_no" name="q3" value="no">
+      <label for="q3_no">いいえ</label>
+    </div>
+
+    <button type="submit">診断する</button>
+  </form>
+
+  <div id="result"></div>
+
+  <a href="index.html" class="back-link">← ホームに戻る</a>
+
+  <script>
+    function checkPersonality(e) {
+      e.preventDefault();
+
+      const form = document.getElementById('personalityForm');
+      const result = document.getElementById('result');
+
+      // スコア計算
+      let score = 0;
+      const answers = ['q1', 'q2', 'q3'];
+
+      answers.forEach(q => {
+        const val = form.elements[q].value;
+        if (val === 'yes') score += 1;
+      });
+
+      // タイプ判定
+      let type = '';
+      let message = '';
+
+      if (score === 3) {
+        type = '冒険家タイプ';
+        message = 'あなたは新しいことが大好きで、行動力にあふれています！チャレンジ精神旺盛な冒険家です。';
+      } else if (score === 2) {
+        type = 'バランスタイプ';
+        message = 'あなたは新しいことも一人の時間も大切にする、バランスの良い性格です。';
+      } else if (score === 1) {
+        type = '慎重派タイプ';
+        message = 'あなたは慎重に物事を考え、一人の時間も好みます。計画的に行動するタイプです。';
+      } else {
+        type = '安定志向タイプ';
+        message = 'あなたは落ち着いていて安定を求める性格です。予定や計画を大切にします。';
+      }
+
+      result.textContent = `✨ あなたの性格タイプは【${type}】です！\n\n${message}`;
+      result.style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
