@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>寿命診断</title>
+  <title>寿命と死因診断</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -11,110 +11,88 @@
       padding: 50px 20px;
     }
 
-    a {
-      display: block;
-      color: #007bff;
-      text-decoration: none;
-      margin-bottom: 20px;
-    }
-
     h1 {
-      font-size: 2em;
       color: #333;
-      font-weight: bold;
     }
 
-    .diagnosis-box {
-      background-color: white;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      padding: 30px;
-      max-width: 500px;
-      margin: 0 auto;
-    }
-
-    input[type="text"] {
-      width: 80%;
+    input {
       padding: 10px;
-      font-size: 1em;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      margin-bottom: 20px;
+      font-size: 16px;
+      width: 250px;
+      margin-bottom: 10px;
     }
 
     button {
-      background-color: #007bff;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #339af0;
       color: white;
       border: none;
-      padding: 10px 30px;
-      font-size: 1em;
-      border-radius: 8px;
       cursor: pointer;
+      border-radius: 5px;
     }
 
-    .result {
+    #result {
       margin-top: 30px;
-      font-size: 1.2em;
-      font-weight: bold;
+      font-size: 18px;
     }
 
-    .short { color: red; }        /* 短命 */
-    .average { color: orange; }   /* 平均 */
-    .long { color: green; }       /* 長寿 */
+    .life { color: #1c7ed6; }   /* 寿命：青系 */
+    .death { color: #d6336c; }  /* 死因：赤系 */
+    .comment { color: #2f9e44; } /* コメント：緑系 */
   </style>
 </head>
 <body>
+  <h1>寿命と死因診断</h1>
+  <p>名前を入力して診断しよう！</p>
+  <input type="text" id="name" placeholder="名前を入力">
+  <button onclick="diagnose()">診断する</button>
 
-  <a href="index.html">← ホームに戻る</a>
-
-  <h1>寿命診断</h1>
-
-  <div class="diagnosis-box">
-    <p>あなたの名前を入力してください：</p>
-    <input type="text" id="nameInput" placeholder="例：イカ次郎" />
-    <br>
-    <button onclick="diagnose()">診断する</button>
-
-    <div id="result" class="result"></div>
-  </div>
+  <div id="result"></div>
 
   <script>
     function diagnose() {
-      const name = document.getElementById('nameInput').value.trim();
-      if (!name) return;
-
-      // 疑似的な寿命と死因
-      const ages = [22, 37, 49, 65, 78, 88, 102];
-      const causes = ["たこ焼きにむせて", "雷に打たれて", "笑いすぎて", "ロケット事故", "AIに敗北", "突然消滅", "寿命で"];
-      const comments = [
-        "短命ですね…健康に気をつけて！",
-        "ちょっと早めの旅立ち…ご冥福を。",
-        "惜しい人を亡くしました。",
-        "平均的な寿命ですね。",
-        "よく頑張りました！",
-        "立派な人生でした！",
-        "大往生！みんなに惜しまれながら…"
-      ];
-
-      const index = name.length % ages.length;
-      const age = ages[index];
-      const cause = causes[index];
-      const comment = comments[index];
-
-      let cssClass = "";
-      if (age < 40) {
-        cssClass = "short";  // 短命 → 赤
-      } else if (age < 80) {
-        cssClass = "average";  // 平均 → オレンジ
-      } else {
-        cssClass = "long";  // 長寿 → 緑
+      const name = document.getElementById("name").value.trim();
+      if (!name) {
+        alert("名前を入力してください！");
+        return;
       }
 
-      // 結果表示
-      document.getElementById('result').innerHTML =
-        `<span class="${cssClass}">${name}さんは ${age}歳で「${cause}」亡くなります。<br>${comment}</span>`;
+      const lifespans = ["22歳", "35歳", "47歳", "63歳", "75歳", "86歳", "99歳", "108歳", "120歳"];
+      const deaths = [
+        "クレーンに挟まれて死亡",
+        "ガチャ爆死のショックで死亡",
+        "伝説のアイテムをめぐる戦争",
+        "トラックに轢かれる",
+        "UFOに連れ去られ消息不明",
+        "マグマに落ちた",
+        "老衰で安らかに眠る",
+        "空からパンが降ってきて死亡",
+        "時間の狭間に迷い込んだ"
+      ];
+      const comments = [
+        "長い人生でしたね。でも最後が壮絶すぎます。",
+        "もうちょっと生きたかったですね…",
+        "最高の人生、お疲れさまでした！",
+        "なんという結末……",
+        "運命とは、残酷なものです。",
+        "あなたの伝説は語り継がれるでしょう。",
+        "次はもっと平和な人生を…"
+      ];
+
+      // シードを元に固定結果を出す
+      const seed = Array.from(name).reduce((sum, char) => sum + char.charCodeAt(0), 0);
+      const life = lifespans[seed % lifespans.length];
+      const death = deaths[seed % deaths.length];
+      const comment = comments[seed % comments.length];
+
+      const resultDiv = document.getElementById("result");
+      resultDiv.innerHTML = `
+        <p class="life">🕰️ 寿命：${life}</p>
+        <p class="death">💀 死因：${death}</p>
+        <p class="comment">💭 コメント：${comment}</p>
+      `;
     }
   </script>
-
 </body>
 </html>
