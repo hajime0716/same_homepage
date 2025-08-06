@@ -134,21 +134,21 @@
       let comment = '';
       if (title === 'なし') {
         if (strength < 3000) {
-          comment = 'まだまだ修行が必要です。称号はまだありません。';
+          comment = 'まだまだ修行が必要です。称号はまだありません。★0.5';
         } else if (strength < 6000) {
-          comment = '実力はあるのに称号はまだ獲得できていません。';
+          comment = '実力はあるのに称号はまだ獲得できていません。★1';
         } else {
-          comment = '強いのに称号がありません。不思議ですね。';
+          comment = '強いのに称号がありません。不思議ですね。★2';
         }
       } else {
         if (strength < 3000) {
-          comment = 'まだまだ修行が必要です。';
+          comment = 'まだまだ修行が必要です。★4';
         } else if (strength < 6000) {
-          comment = 'なかなかの実力者ですね！';
+          comment = 'なかなかの実力者ですね！★6';
         } else if (strength < 9000) {
-          comment = 'あなたの強さは伝説級です！';
+          comment = 'あなたの強さは伝説級です！★8';
         } else {
-          comment = '最強…この世の理を超えています！';
+          comment = '最強…この世の理を超えています！★10';
         }
       }
 
